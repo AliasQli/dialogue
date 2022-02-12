@@ -3,17 +3,17 @@
 
 module System.IO.Dialogue (Dialogue, Request (..), Bin, Name, stdin, stdout, stderr, stdecho, Response (..), IOError (..), runDialogue) where
 
-import           Control.Concurrent
+import           Control.Concurrent   (newChan, readChan, writeChan)
 import           Control.Monad
-import           Data.ByteString    (ByteString)
-import qualified Data.ByteString    as BS
-import           Data.Function      ((&))
+import           Data.ByteString.Lazy (ByteString)
+import qualified Data.ByteString.Lazy as LBS
+import           Data.Function        ((&))
 import           GHC.IO
-import           Prelude            hiding (IOError)
+import           Prelude              hiding (IOError)
 import           System.Directory
-import           System.Environment
-import           System.IO          hiding (stderr, stdin, stdout)
-import qualified System.IO          as Handle
+import           System.Environment   (getArgs, getProgName, lookupEnv, setEnv)
+import           System.IO            hiding (stderr, stdin, stdout)
+import qualified System.IO            as Handle
 
 type Dialogue = [Response] -> [Request]
 
@@ -107,9 +107,9 @@ interpret req = case interpret' req of
     interpret' (ReadFile name)          = (ensureFileExist name $ Str <$> readFile name, OtherError)
     interpret' (WriteFile name str)     = (ensureFileExist name $ Success <$ writeFile name str, WriteError)
     interpret' (AppendFile name str)    = (ensureFileExist name $ Success <$ appendFile name str, WriteError)
-    interpret' (ReadBinFile name)       = (ensureFileExist name $ Bn <$> BS.readFile name, OtherError)
-    interpret' (WriteBinFile name bin)  = (ensureFileExist name $ Success <$ BS.writeFile name bin, WriteError)
-    interpret' (AppendBinFile name bin) = (ensureFileExist name $ Success <$ BS.appendFile name bin, WriteError)
+    interpret' (ReadBinFile name)       = (ensureFileExist name $ Bn <$> LBS.readFile name, OtherError)
+    interpret' (WriteBinFile name bin)  = (ensureFileExist name $ Success <$ LBS.writeFile name bin, WriteError)
+    interpret' (AppendBinFile name bin) = (ensureFileExist name $ Success <$ LBS.appendFile name bin, WriteError)
     interpret' (DeleteFile name)        = (ensureFileExist name $ Success <$ removeFile name, OtherError)
     interpret' (StatusFile name)        = (, OtherError) $ do
       [p, f, d] <- mapM (unsafeInterleaveIO . ($ name)) [doesPathExist, doesFileExist, doesDirectoryExist]
@@ -130,8 +130,8 @@ interpret req = case interpret' req of
             ]
     interpret' (ReadChan name)          = (withMode name R (fmap Str . hGetContents), ReadError)
     interpret' (AppendChan name str)    = (withMode name A (\h -> Success <$ (hPutStr h str >> hFlush h)), ReadError)
-    interpret' (ReadBinChan name)       = (withMode name R (fmap Bn . BS.hGetContents), ReadError)
-    interpret' (AppendBinChan name str) = (withMode name A (\h -> Success <$ (BS.hPutStr h str >> hFlush h)), ReadError)
+    interpret' (ReadBinChan name)       = (withMode name R (fmap Bn . LBS.hGetContents), ReadError)
+    interpret' (AppendBinChan name str) = (withMode name A (\h -> Success <$ (LBS.hPutStr h str >> hFlush h)), ReadError)
     interpret' (StatusChan name)        = (mapChan name & maybe (failWith chanNotExist) (const (pure (Str "0 0"))), OtherError)
     interpret' (Echo b)                 = (Success <$ hSetEcho Handle.stdin b, OtherError)
     interpret' GetArgs                  = (StrList <$> getArgs, OtherError)

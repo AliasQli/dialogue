@@ -4,7 +4,7 @@
 
 module Main where
 
-import           Prelude                hiding (readFile)
+import           Prelude                    hiding (readFile)
 import           System.IO.Continuation
 import           System.IO.Dialogue
 
