@@ -1,6 +1,68 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
-module System.IO.Continuation (module System.IO.Continuation, Dialogue, Bin, Name, IOError (..), stdin, stdout, stderr, stdecho, runDialogue) where
+{-|
+Module      : System.IO.Continuation
+Description : Continuation-based I/O.
+Copyright   : (c) Alias Qli, 2022
+License     : BSD-3-Clause
+Maintainer  : 2576814881@qq.com
+Stability   : experimental
+Portability : POSIX
+
+This module implements continuation-based I/O as described in Haskell Report 1.2. It uses 
+the same basic types as the stream-based I/O.
+-}
+
+module System.IO.Continuation
+  ( -- * Continuation Types
+    SuccCont
+  , StrCont
+  , StrListCont
+  , BinCont
+  , FailCont
+  , -- * Transactions
+    -- | Continuation-based I/O is based on a collection of functions called /transactions/
+    -- defined in a continuation style. Please refer to the corresponding constructors under 
+    -- 'Request' for documentations.
+    done
+  , readFile
+  , writeFile
+  , appendFile
+  , readBinFile
+  , writeBinFile
+  , appendBinFile
+  , deleteFile
+  , statusFile
+  , readChan
+  , appendChan
+  , readBinChan
+  , appendBinChan
+  , statusChan
+  , echo
+  , getArgs
+  , getProgName
+  , getEnv
+  , setEnv
+  , -- * Other Functions
+    exit
+  , abort
+  , print
+  , prints
+  , interact
+  , -- * Re-exports
+    -- ** Types
+    Dialogue
+  , Bin
+  , Name
+  , IOError (..)
+  , -- ** Channels
+    stdin
+  , stdout
+  , stderr
+  , stdecho
+  , -- ** Run the Program
+    runDialogue
+  ) where
 
 import           Prelude            (Bool, Show (..), String, shows)
 import           System.IO.Dialogue

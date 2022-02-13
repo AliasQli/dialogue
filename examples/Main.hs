@@ -2,12 +2,14 @@
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 {-# OPTIONS_GHC -Wno-unused-matches #-}
 
+-- | Here are some examples from the report.
 module Main where
 
 import           Prelude                    hiding (readFile)
 import           System.IO.Continuation
 import           System.IO.Dialogue
 
+-- | A small example using the stream-based I/O. Note the irrefutable patterns!
 example1 :: Dialogue
 example1 ~(Success: ~((Str userInput) : ~(Success : ~(r4 : _)))) =
   [ AppendChan stdout "please type a filename\n"
@@ -19,6 +21,7 @@ example1 ~(Success: ~((Str userInput) : ~(Success : ~(r4 : _)))) =
   , AppendChan stdout "\nfinished"
   ] where (name : _) = lines userInput
 
+-- | Same as 'example1', but using the continuation-based I/O.
 example2 :: Dialogue
 example2 =
   appendChan stdout "please type a filename\n" exit (
@@ -30,7 +33,9 @@ example2 =
                 (\contents ->
   appendChan stdout contents exit done))))
 
+------------------------------------------------------------
 
+-- | An example involving synchronisation.
 program :: Dialogue
 program = readChan stdin exit (\userInput -> readNums (lines userInput))
 

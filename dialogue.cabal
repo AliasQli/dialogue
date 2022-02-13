@@ -1,7 +1,7 @@
 cabal-version: 2.4
 
 name:           dialogue
-version:        0.1.0.0
+version:        0.1.0
 description:    Please see the README on GitHub at <https://github.com/AliasQli/dialogue#readme>
 homepage:       https://github.com/AliasQli/dialogue#readme
 bug-reports:    https://github.com/AliasQli/dialogue/issues
