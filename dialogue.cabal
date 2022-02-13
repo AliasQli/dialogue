@@ -2,6 +2,8 @@ cabal-version: 2.4
 
 name:           dialogue
 version:        0.1.0
+category:       IO
+synopsis:       I/O in Haskell Report 1.2
 description:    Please see the README on GitHub at <https://github.com/AliasQli/dialogue#readme>
 homepage:       https://github.com/AliasQli/dialogue#readme
 bug-reports:    https://github.com/AliasQli/dialogue/issues
@@ -26,14 +28,12 @@ library
   hs-source-dirs:
       src
   ghc-options: 
-    -j 
-    -O 
-    -Wall 
-    -Wcompat 
-    -Wincomplete-record-updates 
-    -Wincomplete-uni-patterns 
-    -Wredundant-constraints 
-    -Wno-name-shadowing 
+    -Wall
+    -Wcompat
+    -Wincomplete-record-updates
+    -Wincomplete-uni-patterns
+    -Wredundant-constraints
+    -Wno-name-shadowing
     -Wno-orphans
   build-depends:
       base        >= 4.7 && < 5
@@ -46,17 +46,15 @@ executable examples
   hs-source-dirs:
       examples
   ghc-options:
-    -j 
-    -O 
-    -Wall 
+    -Wall
     -Wcompat 
-    -Wincomplete-record-updates 
-    -Wincomplete-uni-patterns 
-    -Wredundant-constraints 
-    -Wno-name-shadowing 
+    -Wincomplete-record-updates
+    -Wincomplete-uni-patterns
+    -Wredundant-constraints
+    -Wno-name-shadowing
     -Wno-orphans
-    -threaded 
-    -rtsopts 
+    -threaded
+    -rtsopts
     -with-rtsopts=-N
   build-depends:
       base >= 4.7 && < 5
