@@ -2,7 +2,7 @@
 {-# LANGUAGE TupleSections #-}
 
 {-|
-Module      : System.IO.Dialogue 
+Module      : System.IO.Dialogue
 Description : Stream-based I/O.
 Copyright   : (c) Alias Qli, 2022
 License     : BSD-3-Clause
@@ -10,15 +10,15 @@ Maintainer  : 2576814881@qq.com
 Stability   : experimental
 Portability : POSIX
 
-This module implements stream-based I/O as described in Haskell Report 1.2. 
+This module implements stream-based I/O as described in Haskell Report 1.2.
 
 As th resport says, "Haskell's I/O system is based on the view that a program communicates to
-the outside world via /streams of messages/: a program issues a stream of /requests/ to the 
-operating system and in  return receives a stream of /responses/." And a stream in Haskell is 
+the outside world via /streams of messages/: a program issues a stream of /requests/ to the
+operating system and in  return receives a stream of /responses/." And a stream in Haskell is
 only a lazy list.
 -}
 
-module System.IO.Dialogue 
+module System.IO.Dialogue
   ( -- * The Program Type
     Dialogue
   , -- ** Request Types
@@ -243,7 +243,7 @@ data IOError
   = WriteError String
   | ReadError String
   | SearchError String
-  | -- | Since we're using a modern device and the maximum line length and page length 
+  | -- | Since we're using a modern device and the maximum line length and page length
     -- allowed on the channel have no bound, this error would never occur.
     FormatError String
   | OtherError String
@@ -302,9 +302,9 @@ interpret req = case interpret' req of
             , if executable s then 'x' else '-'
             ]
     interpret' (ReadChan name)          = (withMode name R (fmap Str . hGetContents), ReadError)
-    interpret' (AppendChan name str)    = (withMode name A (\h -> Success <$ (hPutStr h str >> hFlush h)), ReadError)
+    interpret' (AppendChan name str)    = (withMode name A (\h -> Success <$ (hPutStr h str >> hFlush h)), WriteError)
     interpret' (ReadBinChan name)       = (withMode name R (fmap Bn . LBS.hGetContents), ReadError)
-    interpret' (AppendBinChan name str) = (withMode name A (\h -> Success <$ (LBS.hPutStr h str >> hFlush h)), ReadError)
+    interpret' (AppendBinChan name str) = (withMode name A (\h -> Success <$ (LBS.hPutStr h str >> hFlush h)), WriteError)
     interpret' (StatusChan name)        = (mapChan name & maybe (failWith chanNotExist) (const (pure (Str "0 0"))), OtherError)
     interpret' (Echo b)                 = (Success <$ hSetEcho Handle.stdin b, OtherError)
     interpret' GetArgs                  = (StrList <$> getArgs, OtherError)

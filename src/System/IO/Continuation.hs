@@ -9,8 +9,8 @@ Maintainer  : 2576814881@qq.com
 Stability   : experimental
 Portability : POSIX
 
-This module implements continuation-based I/O as described in Haskell Report 1.2. It uses 
-the same basic types as the stream-based I/O.
+This module implements continuation-based I/O as described in Haskell Report 1.2. It shares 
+the same basic types as stream-based I/O.
 -}
 
 module System.IO.Continuation
@@ -109,7 +109,7 @@ readBinFile  :: Name -> FailCont -> BinCont -> Dialogue
 readBinFile name fail succ resps = ReadBinFile name : binDispatch fail succ resps
 
 writeBinFile :: Name -> Bin -> FailCont -> SuccCont -> Dialogue
-writeBinFile name contents fail succ resps = AppendBinFile name contents : succDispatch fail succ resps
+writeBinFile name contents fail succ resps = WriteBinFile name contents : succDispatch fail succ resps
 
 appendBinFile :: Name -> Bin -> FailCont -> SuccCont -> Dialogue
 appendBinFile name contents fail succ resps = AppendBinFile name contents : succDispatch fail succ resps
